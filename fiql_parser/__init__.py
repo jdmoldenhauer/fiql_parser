@@ -18,15 +18,13 @@
     ``*( pchar / "/" / "?" )``, I opted to fix the issue by simply allowing
     the ":" in addition to the other arg chars.
 """
-from __future__ import unicode_literals
-from __future__ import absolute_import
 
-__version__ = "0.15"
+__version__ = '0.15'
 
-from .exceptions import FiqlException
-from .exceptions import FiqlObjectException, FiqlFormatException
-from .operator import Operator
-from .constraint import Constraint
-from .expression import Expression
-from .parser import parse_str_to_expression
-
+from .exceptions import FiqlException  # noqa: F401
+from .exceptions import FiqlObjectException  # noqa: F401
+from .exceptions import FiqlFormatException  # noqa: F401
+from .operator import Operator  # noqa: F401
+from .constraint import Constraint  # noqa: F401
+from .expression import Expression  # noqa: F401
+from .parser import parse_str_to_expression  # noqa: F401

@@ -7,15 +7,8 @@ a FIQL ``Expression`` into an object representing the same FIQL
 The ``Expression`` object returned is ideally suited for use in filtering
 database queries with many ORMs.
 """
-from __future__ import unicode_literals
-from __future__ import absolute_import
 
-try:
-    #pylint: disable=no-name-in-module
-    from urllib import unquote_plus
-except ImportError:
-    #pylint: disable=import-error,no-name-in-module
-    from urllib.parse import unquote_plus
+from urllib.parse import unquote_plus
 
 from .constants import CONSTRAINT_COMP
 from .exceptions import FiqlFormatException
@@ -48,18 +41,19 @@ def iter_parse(fiql_str):
     while len(fiql_str):
         constraint_match = CONSTRAINT_COMP.split(fiql_str, 1)
         if len(constraint_match) < 2:
-            yield (constraint_match[0], None, None, None)
+            yield constraint_match[0], None, None, None
             break
         yield (
             constraint_match[0],
             unquote_plus(constraint_match[1]),
             constraint_match[4],
-            unquote_plus(constraint_match[6]) \
-                    if constraint_match[6] else None
+            unquote_plus(constraint_match[6]) if constraint_match[6] else None
         )
         fiql_str = constraint_match[8]
 
-def parse_str_to_expression(fiql_str):
+
+# TODO: Fix this function, it has a McCabe score of 13.
+def parse_str_to_expression(fiql_str):  # noqa: C901
     """Parse a FIQL formatted string into an ``Expression``.
 
     Args:
@@ -79,7 +73,6 @@ def parse_str_to_expression(fiql_str):
         ...         "name==bar,dob=gt=1990-01-01")
 
     """
-    #pylint: disable=too-many-branches
     nesting_lvl = 0
     last_element = None
     expression = Expression()
@@ -89,7 +82,7 @@ def parse_str_to_expression(fiql_str):
                 if char == '(':
                     if isinstance(last_element, BaseExpression):
                         raise FiqlFormatException(
-                            "%s can not be followed by %s" % (
+                            '%s can not be followed by %s' % (
                                 last_element.__class__, Expression))
                     expression = expression.create_nested_expression()
                     nesting_lvl += 1
@@ -100,25 +93,24 @@ def parse_str_to_expression(fiql_str):
                 else:
                     if not expression.has_constraint():
                         raise FiqlFormatException(
-                            "%s proceeding initial %s" % (
+                            '%s proceeding initial %s' % (
                                 Operator, Constraint))
                     if isinstance(last_element, Operator):
                         raise FiqlFormatException(
-                            "%s can not be followed by %s" % (
+                            '%s can not be followed by %s' % (
                                 Operator, Operator))
                     last_element = Operator(char)
                     expression = expression.add_operator(last_element)
         if selector:
             if isinstance(last_element, BaseExpression):
-                raise FiqlFormatException("%s can not be followed by %s" % (
+                raise FiqlFormatException('%s can not be followed by %s' % (
                     last_element.__class__, Constraint))
             last_element = Constraint(selector, comparison, argument)
             expression.add_element(last_element)
     if nesting_lvl != 0:
         raise FiqlFormatException(
-            "At least one nested expression was not correctly closed")
+            'At least one nested expression was not correctly closed')
     if not expression.has_constraint():
         raise FiqlFormatException(
             "Parsed string '%s' contained no constraint" % fiql_str)
     return expression
-

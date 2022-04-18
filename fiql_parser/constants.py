@@ -9,7 +9,7 @@ rules used in the FIQL specification.
 Attributes:
     PCT_ENCODING_REGEX: Regular expression representing Percent-Encoding
         (:rfc:`3986#section-2.1`).
-    UNRESERVED_REGEX: Regular expression repesenting Unreserved Characters
+    UNRESERVED_REGEX: Regular expression representing Unreserved Characters
         (:rfc:`3986#section-2.3`).
     FIQL_DELIM_REGEX: Regular expression representing the FIQL Delimiter
         (`FIQL Draft#section-3.2`_).
@@ -24,7 +24,7 @@ Attributes:
         a FIQL Argument (`FIQL Draft#section-3.2`_). This rule includes a
         modification to the rule in the FIQL draft that allows for ":" in
         arguments (Example: "2015-08-27T10:30:00Z").
-    ARGUMENT_REGEX: Regular expression represeting the FIQL Argument
+    ARGUMENT_REGEX: Regular expression representing the FIQL Argument
         (`FIQL Draft#section-3.2`_). The Argument identifies the value that the
         Comparison operator should use when validating the Constraint.
     CONSTRAINT_REGEX: Regular expression representing the FIQL Constraint
@@ -33,8 +33,6 @@ Attributes:
     CONSTRAINT_COMP: Compiled version of ``CONSTRAINT_REGEX``.
     COMPARISON_COMP: Compiled version of ``CONSTRAINT_REGEX`` as a full string.
 """
-from __future__ import unicode_literals
-from __future__ import absolute_import
 
 import re
 
@@ -70,4 +68,3 @@ CONSTRAINT_COMP = re.compile(CONSTRAINT_REGEX)
 
 # Comparison; full string (compiled)
 COMPARISON_COMP = re.compile(r'^' + COMPARISON_REGEX + r'$')
-

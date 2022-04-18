@@ -9,15 +9,8 @@ acceptance and representation of the FIQL ``Constraint``.
 Attributes:
     COMPARISON_MAP (dict): Mappings for common FIQL comparisons.
 """
-from __future__ import unicode_literals
-from __future__ import absolute_import
 
-try:
-    #pylint: disable=no-name-in-module
-    from urllib import quote_plus
-except ImportError:
-    #pylint: disable=import-error,no-name-in-module
-    from urllib.parse import quote_plus
+from urllib.parse import quote_plus
 
 from .exceptions import FiqlObjectException
 from .constants import COMPARISON_COMP
@@ -36,11 +29,10 @@ COMPARISON_MAP = {
 
 
 class Constraint(BaseExpression):
-
     """
     The ``Constraint`` is the smallest logical unit for a FIQL ``Expression``.
     It itself must evaluate to ``True`` or ``False`` and contains no smaller
-    unit which itself can evaulate to ``True`` or ``False``.
+    unit which itself can evaluate to ``True`` or ``False``.
 
     Attributes:
         selector (string): Constraint ``selector``.
@@ -121,8 +113,7 @@ class Constraint(BaseExpression):
             string: The represented ``Constraint``.
         """
         if self.argument:
-            return "{0}{1}{2}".format(quote_plus(self.selector),
+            return '{0}{1}{2}'.format(quote_plus(self.selector),
                                       self.comparison,
                                       quote_plus(self.argument))
         return self.selector
-
