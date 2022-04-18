@@ -23,4 +23,3 @@ Information on specific functions, classes, methods, and exception.
    :maxdepth: 3
 
    api
-

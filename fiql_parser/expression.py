@@ -6,16 +6,12 @@ account the ``Expressions`` part of it.
 The ``expression`` module includes the code used for ensuring that any FIQL
 ``Expression`` created with this package is a valid FIQL ``Expression``.
 """
-from __future__ import unicode_literals
-from __future__ import absolute_import
-
 
 from .exceptions import FiqlObjectException
 from .operator import Operator
 
 
-class BaseExpression(object):
-
+class BaseExpression:
     """
     Both ``Constraint`` and ``Expression`` classes extend the
     ``BaseExpression`` class. A FIQL ``Constraint`` is a simple FIQL
@@ -51,8 +47,7 @@ class BaseExpression(object):
             FiqlObjectException: Parent must be of type ``Expression``.
         """
         if not isinstance(parent, Expression):
-            raise FiqlObjectException("Parent must be of %s not %s" % (
-                Expression, type(parent)))
+            raise FiqlObjectException('Parent must be of %s not %s' % (Expression, type(parent)))
         self.parent = parent
 
     def get_parent(self):
@@ -65,8 +60,9 @@ class BaseExpression(object):
             FiqlObjectException: Parent is ``None``.
         """
         if not isinstance(self.parent, Expression):
-            raise FiqlObjectException("Parent must be of %s not %s" % (
-                Expression, type(self.parent)))
+            raise FiqlObjectException(
+                'Parent must be of %s not %s' % (Expression, type(self.parent))
+            )
         return self.parent
 
 
@@ -146,23 +142,20 @@ class Expression(BaseExpression):
             FiqlObjectExpression: Operator is not a valid ``Operator``.
         """
         if not isinstance(operator, Operator):
-            raise FiqlObjectException("%s is not a valid element type" % (
-                operator.__class__))
+            raise FiqlObjectException('%s is not a valid element type' % (operator.__class__))
 
         if not self._working_fragment.operator:
             self._working_fragment.operator = operator
         elif operator > self._working_fragment.operator:
             last_constraint = self._working_fragment.elements.pop()
-            self._working_fragment = self._working_fragment \
-                    .create_nested_expression()
+            self._working_fragment = self._working_fragment.create_nested_expression()
             self._working_fragment.add_element(last_constraint)
             self._working_fragment.add_operator(operator)
         elif operator < self._working_fragment.operator:
             if self._working_fragment.parent:
                 return self._working_fragment.parent.add_operator(operator)
             else:
-                return Expression().add_element(self._working_fragment) \
-                        .add_operator(operator)
+                return Expression().add_element(self._working_fragment).add_operator(operator)
         return self
 
     def add_element(self, element):
@@ -242,8 +235,7 @@ class Expression(BaseExpression):
         if len(self.elements) == 1:
             return self.elements[0].to_python()
         operator = self.operator or Operator(';')
-        return [operator.to_python()] + \
-            [elem.to_python() for elem in self.elements]
+        return [operator.to_python()] + [elem.to_python() for elem in self.elements]
 
     def __str__(self):
         """Represent the ``Expression`` instance as a string.
@@ -252,11 +244,9 @@ class Expression(BaseExpression):
             string: The represented ``Expression``.
         """
         operator = self.operator or Operator(';')
-        elements_str = str(operator).join(
-            ["{0}".format(elem) for elem in self.elements])
+        elements_str = str(operator).join(['{0}'.format(elem) for elem in self.elements])
         if self.parent:
             parent_operator = self.parent.operator or Operator(';')
             if parent_operator > operator:
-                return "(" + elements_str + ")"
+                return '(' + elements_str + ')'
         return elements_str
-

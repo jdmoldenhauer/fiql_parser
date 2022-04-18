@@ -11,8 +11,6 @@ Attributes:
     OPERATOR_MAP (dict of tuple): Mappings of FIQL operators to common terms
         and their associated precedence.
 """
-from __future__ import unicode_literals
-from __future__ import absolute_import
 
 from .exceptions import FiqlObjectException
 
@@ -23,8 +21,7 @@ OPERATOR_MAP = {
 }
 
 
-class Operator(object):
-
+class Operator:
     """
     The comparison ``Operator`` is the representation of the FIQL comparison
     operator.
@@ -32,7 +29,6 @@ class Operator(object):
     Attributes:
         value (string): The FIQL operator.
     """
-    #pylint: disable=too-few-public-methods
 
     def __init__(self, fiql_op_str):
         """Initialize instance of ``Operator``.
@@ -43,9 +39,8 @@ class Operator(object):
         Raises:
             FiqlObjectException: Invalid FIQL operator.
         """
-        if not fiql_op_str in OPERATOR_MAP:
-            raise FiqlObjectException(
-                "'%s' is not a valid FIQL operator" % fiql_op_str)
+        if fiql_op_str not in OPERATOR_MAP:
+            raise FiqlObjectException("'%s' is not a valid FIQL operator" % fiql_op_str)
         self.value = fiql_op_str
 
     def to_python(self):
@@ -84,14 +79,14 @@ class Operator(object):
         return 0
 
     def __eq__(self, other):
-        """Of equal precendence.
+        """Of equal precedence.
 
         Args:
             other (Operator): The ``Operator`` we are comparing precedence
                 against.
 
         Returns:
-            boolean: ``True`` if of equal precendence of ``other``.
+            boolean: ``True`` if of equal precedence of ``other``.
         """
         return OPERATOR_MAP[self.value][1] == OPERATOR_MAP[other.value][1]
 
@@ -106,4 +101,3 @@ class Operator(object):
             boolean: ``True`` if of less than precendence of ``other``.
         """
         return OPERATOR_MAP[self.value][1] < OPERATOR_MAP[other.value][1]
-
