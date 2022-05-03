@@ -1,17 +1,14 @@
-FIQL Parser
-===========
+# FIQL Parser
 
 A Python parser for the Feed Item Query Language (FIQL).
 
-Documentation
--------------
+## Documentation
 
 Complete documentation can be found at http://fiql-parser.readthedocs.org/
 
-CHANGES
--------
+## CHANGES
 
-**Version 0.15**
+### Version 0.15
 
 Release on July 2nd, 2016
 
@@ -19,14 +16,14 @@ Release on July 2nd, 2016
 * Added Version 0.14 changes and release date to README.
 * Removed unnecessary versioning logic in docs/conf.py.
 
-**Version 0.14**
+### Version 0.14
 
 Release on November 15th, 2015
 
 * Added missing date for 0.13 release in README.
 * Fixed packaging bug in version 0.13.
 
-**Version 0.13**
+### Version 0.13
 
 Release on October 17th, 2015
 
@@ -34,14 +31,14 @@ Release on October 17th, 2015
 * Split code into multiple files.
 * Add exception classes to better distinguish between errors.
 
-**Version 0.12**
+### Version 0.12
 
 Release on August 27th, 2015
 
 * Added pylint to tox.
 * Added Python3.4 support.
 
-**Version 0.11**
+### Version 0.11
 
 Released on August 27th, 2015
 
@@ -54,14 +51,14 @@ Released on August 27th, 2015
 * Add missing ``py_modules`` required to actually end up with a working
   package.
 
-**Version 0.10**
+### Version 0.10
 
 Released on December 18th, 2014
 
 * Updated documentation for compatibility pypi and github.
 * Fixed some stuff in setup.py pre upload to pypi.
 
-**Version 0.9**
+### Version 0.9
 
 Released on December 3rd, 2014
 
