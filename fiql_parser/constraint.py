@@ -9,7 +9,10 @@ acceptance and representation of the FIQL ``Constraint``.
 Attributes:
     COMPARISON_MAP (dict): Mappings for common FIQL comparisons.
 """
+from __future__ import annotations
 
+from typing import Final
+from typing import Optional
 from urllib.parse import quote_plus
 
 from .exceptions import FiqlObjectException
@@ -18,7 +21,7 @@ from .expression import BaseExpression, Expression
 
 
 # Common FIQL comparisons.
-COMPARISON_MAP = {
+COMPARISON_MAP: Final = {
     '==': '==',
     '!=': '!=',
     '=gt=': '>',
@@ -40,7 +43,13 @@ class Constraint(BaseExpression):
         argument (string): Constraint ``argument``.
     """
 
-    def __init__(self, selector, comparison=None, argument=None):
+    # TODO: Double check these types...
+    def __init__(
+        self,
+        selector: str,
+        comparison: Optional[str] = None,
+        argument: Optional[str] = None,
+    ) -> None:
         """Initialize instance of ``Constraint``.
 
         Args:
@@ -62,7 +71,9 @@ class Constraint(BaseExpression):
         self.comparison = comparison
         self.argument = argument
 
-    def op_and(self, *elements):
+    # TODO: Figure these out. This class might just need to inherit from Expression
+    #  or there should be an expression mixin...
+    def op_and(self, *elements) -> Expression:
         """Create an ``Expression`` using this ``Constraint`` and the specified
         additional ``elements`` joined using an "AND" ``Operator``
 
@@ -78,7 +89,7 @@ class Constraint(BaseExpression):
         """
         return Expression().op_and(self, *elements)
 
-    def op_or(self, *elements):
+    def op_or(self, *elements) -> Expression:
         """Create an ``Expression`` using this ``Constraint`` and the specified
         additional ``elements`` joined using an "OR" ``Operator``
 
@@ -94,7 +105,7 @@ class Constraint(BaseExpression):
         """
         return Expression().op_or(self, *elements)
 
-    def to_python(self):
+    def to_python(self) -> tuple[str, str, Optional[str]]:
         """Deconstruct the ``Constraint`` instance to a tuple.
 
         Returns:
@@ -106,14 +117,12 @@ class Constraint(BaseExpression):
             self.argument
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Represent the ``Constraint`` instance as a string.
 
         Returns:
             string: The represented ``Constraint``.
         """
         if self.argument:
-            return '{0}{1}{2}'.format(quote_plus(self.selector),
-                                      self.comparison,
-                                      quote_plus(self.argument))
+            return f'{quote_plus(self.selector)}{self.comparison}{quote_plus(self.argument)}'
         return self.selector

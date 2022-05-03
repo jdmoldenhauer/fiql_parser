@@ -9,6 +9,7 @@ provide the flexibility to differentiate between errors resulting from
 attempting to construct the expression object and those resulting from
 incorrectly formatted FIQL strings.
 """
+from __future__ import annotations
 
 
 class FiqlException(Exception):

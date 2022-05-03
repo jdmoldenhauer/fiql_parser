@@ -6,9 +6,17 @@ account the ``Expressions`` part of it.
 The ``expression`` module includes the code used for ensuring that any FIQL
 ``Expression`` created with this package is a valid FIQL ``Expression``.
 """
+from __future__ import annotations
+
+import typing
+from typing import Optional
+from typing import Union
 
 from .exceptions import FiqlObjectException
 from .operator import Operator
+
+if typing.TYPE_CHECKING:
+    from .constraint import Constraint
 
 
 class BaseExpression:
@@ -33,11 +41,12 @@ class BaseExpression:
         parent (Expression): The ``Expression`` which contains this object.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize instance of ``BaseExpression``."""
-        self.parent = None
+        self.parent: Optional["BaseExpression"] = None
 
-    def set_parent(self, parent):
+    # TODO: Fix Should just be a gettr, and settr.  Keep this around for backwards compat.
+    def set_parent(self, parent: "BaseExpression") -> None:
         """Set parent ``Expression`` for this object.
 
         Args:
@@ -47,11 +56,10 @@ class BaseExpression:
             FiqlObjectException: Parent must be of type ``Expression``.
         """
         if not isinstance(parent, Expression):
-            raise FiqlObjectException('Parent must be of %s not %s' % (
-                Expression, type(parent)))
+            raise FiqlObjectException(f'Parent must be of {Expression} not {type(parent)}')
         self.parent = parent
 
-    def get_parent(self):
+    def get_parent(self) -> Optional["BaseExpression"]:
         """Get the parent ``Expression`` for this object.
 
         Returns:
@@ -61,13 +69,11 @@ class BaseExpression:
             FiqlObjectException: Parent is ``None``.
         """
         if not isinstance(self.parent, Expression):
-            raise FiqlObjectException('Parent must be of %s not %s' % (
-                Expression, type(self.parent)))
+            raise FiqlObjectException(f'Parent must be of {Expression} not {type(self.parent)}')
         return self.parent
 
 
 class Expression(BaseExpression):
-
     """
     The ``Expression`` is the largest logical unit of a FIQL ``Expression``. It
     must, like the ``Constraint`` evaluate to ``True`` or ``False``. The
@@ -92,7 +98,7 @@ class Expression(BaseExpression):
             this ``Expression``.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize instance of ``Expression``."""
         super(Expression, self).__init__()
         self.elements = []
@@ -102,8 +108,8 @@ class Expression(BaseExpression):
         # Keep track of what was last added.
         self._last_element = None
 
-    def has_constraint(self):
-        """Return whether or not the working ``Expression`` has any
+    def has_constraint(self) -> int:
+        """Return whether the working ``Expression`` has any
         ``Constraints``.
 
         Returns:
@@ -111,7 +117,7 @@ class Expression(BaseExpression):
         """
         return len(self.elements)
 
-    def add_operator(self, operator):
+    def add_operator(self, operator: Operator) -> 'Expression':
         """Add an ``Operator`` to the ``Expression``.
 
         The ``Operator`` may result in a new ``Expression`` if an ``Operator``
@@ -159,7 +165,7 @@ class Expression(BaseExpression):
                 return Expression().add_element(self._working_fragment).add_operator(operator)
         return self
 
-    def add_element(self, element):
+    def add_element(self, element: Union[Operator, Constraint, 'Expression']) -> 'Expression':
         """Add an element of type ``Operator``, ``Constraint``, or
         ``Expression`` to the ``Expression``.
 
@@ -179,7 +185,7 @@ class Expression(BaseExpression):
         else:
             return self.add_operator(element)
 
-    def create_nested_expression(self):
+    def create_nested_expression(self) -> 'Expression':
         """Create a nested ``Expression``, add it as an element to this
         ``Expression``, and return it.
 
@@ -190,7 +196,7 @@ class Expression(BaseExpression):
         self.add_element(sub)
         return sub
 
-    def op_and(self, *elements):
+    def op_and(self, *elements) -> 'Expression':
         """Update the ``Expression`` by joining the specified additional
         ``elements`` using an "AND" ``Operator``
 
@@ -207,7 +213,7 @@ class Expression(BaseExpression):
             expression.add_element(element)
         return expression
 
-    def op_or(self, *elements):
+    def op_or(self, *elements) -> 'Expression':
         """Update the ``Expression`` by joining the specified additional
         ``elements`` using an "OR" ``Operator``
 
@@ -224,7 +230,8 @@ class Expression(BaseExpression):
             expression.add_element(element)
         return expression
 
-    def to_python(self):
+    # TODO: Figure this out, Constrain inherits from it and returns a tuple. This returns a list.
+    def to_python(self) -> list[str]:
         """Deconstruct the ``Expression`` instance to a list or tuple
         (If ``Expression`` contains only one ``Constraint``).
 
@@ -236,10 +243,9 @@ class Expression(BaseExpression):
         if len(self.elements) == 1:
             return self.elements[0].to_python()
         operator = self.operator or Operator(';')
-        return [operator.to_python()] + \
-            [elem.to_python() for elem in self.elements]
+        return [operator.to_python()] + [elem.to_python() for elem in self.elements]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Represent the ``Expression`` instance as a string.
 
         Returns:

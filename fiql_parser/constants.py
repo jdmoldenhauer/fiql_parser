@@ -33,38 +33,40 @@ Attributes:
     CONSTRAINT_COMP: Compiled version of ``CONSTRAINT_REGEX``.
     COMPARISON_COMP: Compiled version of ``CONSTRAINT_REGEX`` as a full string.
 """
+from __future__ import annotations
 
 import re
+from typing import Final
 
 
 # Percent-encoding
-PCT_ENCODING_REGEX = r'%[A-Fa-f0-9]{2}'
+PCT_ENCODING_REGEX: Final = r'%[A-Fa-f0-9]{2}'
 
 # Unreserved Characters
-UNRESERVED_REGEX = r'[A-Za-z0-9-\._~]'
+UNRESERVED_REGEX: Final = r'[A-Za-z0-9-\._~]'
 
 # FIQL delimiter
-FIQL_DELIM_REGEX = r'[\!\$\'\*\+]'
+FIQL_DELIM_REGEX: Final = r'[\!\$\'\*\+]'
 
 # Comparison operator
-COMPARISON_REGEX = r'(=[A-Za-z]*|' + FIQL_DELIM_REGEX + ')='
+COMPARISON_REGEX: Final = r'(=[A-Za-z]*|' + FIQL_DELIM_REGEX + ')='
 
 # Selector
-SELECTOR_REGEX = '(' + UNRESERVED_REGEX + '|' + PCT_ENCODING_REGEX + ')+'
+SELECTOR_REGEX: Final = '(' + UNRESERVED_REGEX + '|' + PCT_ENCODING_REGEX + ')+'
 
 # Arg-char
-ARG_CHAR_REGEX = '(' + UNRESERVED_REGEX + '|' + PCT_ENCODING_REGEX + '|' + \
+ARG_CHAR_REGEX: Final = '(' + UNRESERVED_REGEX + '|' + PCT_ENCODING_REGEX + '|' + \
         FIQL_DELIM_REGEX + '|' + '=|:)'
 
 # Argument
-ARGUMENT_REGEX = ARG_CHAR_REGEX + '+'
+ARGUMENT_REGEX: Final = ARG_CHAR_REGEX + '+'
 
 # Constraint
-CONSTRAINT_REGEX = '(' + SELECTOR_REGEX + ')((' + COMPARISON_REGEX + ')' + \
+CONSTRAINT_REGEX: Final = '(' + SELECTOR_REGEX + ')((' + COMPARISON_REGEX + ')' + \
         '(' + ARGUMENT_REGEX + '))?'
 
 # Constraint (compiled)
-CONSTRAINT_COMP = re.compile(CONSTRAINT_REGEX)
+CONSTRAINT_COMP: Final = re.compile(CONSTRAINT_REGEX)
 
 # Comparison; full string (compiled)
-COMPARISON_COMP = re.compile(r'^' + COMPARISON_REGEX + r'$')
+COMPARISON_COMP: Final = re.compile(r'^' + COMPARISON_REGEX + r'$')

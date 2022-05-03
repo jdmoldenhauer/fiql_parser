@@ -7,7 +7,10 @@ a FIQL ``Expression`` into an object representing the same FIQL
 The ``Expression`` object returned is ideally suited for use in filtering
 database queries with many ORMs.
 """
+from __future__ import annotations
 
+from typing import Iterator
+from typing import Optional
 from urllib.parse import unquote_plus
 
 from .constants import CONSTRAINT_COMP
@@ -17,7 +20,7 @@ from .constraint import Constraint
 from .operator import Operator
 
 
-def iter_parse(fiql_str):
+def iter_parse(fiql_str: str) -> Iterator[tuple[str, str, str, Optional[str]]]:
     """Iterate through the FIQL string. Yield a tuple containing the
     following FIQL components for each iteration:
 
@@ -53,7 +56,7 @@ def iter_parse(fiql_str):
 
 
 # TODO: Fix this function, it has a McCabe score of 13.
-def parse_str_to_expression(fiql_str):  # noqa: C901
+def parse_str_to_expression(fiql_str: str) -> Expression:  # noqa: C901
     """Parse a FIQL formatted string into an ``Expression``.
 
     Args:

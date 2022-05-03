@@ -11,11 +11,16 @@ Attributes:
     OPERATOR_MAP (dict of tuple): Mappings of FIQL operators to common terms
         and their associated precedence.
 """
+from __future__ import annotations
+
+from typing import Any
+from typing import Final
+from typing import Literal
 
 from .exceptions import FiqlObjectException
 
 
-OPERATOR_MAP = {
+OPERATOR_MAP: Final = {
     ';': ('AND', 2),
     ',': ('OR', 1),
 }
@@ -30,7 +35,7 @@ class Operator:
         value (string): The FIQL operator.
     """
 
-    def __init__(self, fiql_op_str):
+    def __init__(self, fiql_op_str: Literal[';', ',']) -> None:
         """Initialize instance of ``Operator``.
 
         Args:
@@ -40,11 +45,10 @@ class Operator:
             FiqlObjectException: Invalid FIQL operator.
         """
         if fiql_op_str not in OPERATOR_MAP:
-            raise FiqlObjectException(
-                "'%s' is not a valid FIQL operator" % fiql_op_str)
+            raise FiqlObjectException(f"'{fiql_op_str}' is not a valid FIQL operator")
         self.value = fiql_op_str
 
-    def to_python(self):
+    def to_python(self) -> str:
         """Deconstruct the ``Operator`` instance to a string.
 
         Returns:
@@ -52,7 +56,7 @@ class Operator:
         """
         return OPERATOR_MAP[self.value][0]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Represent the ``Operator`` instance as a string.
 
         Returns:
@@ -60,26 +64,7 @@ class Operator:
         """
         return self.value
 
-    def __cmp__(self, other):
-        """Compare using operator precedence.
-
-        Args:
-            other (Operator): The ``Operator`` we are comparing precedence
-                against.
-
-        Returns:
-            integer: ``1`` if greater than ``other``, ``-1`` if less than
-            ``other``, and ``0`` if of equal precedence of ``other``.
-        """
-        prec_self = OPERATOR_MAP[self.value][1]
-        prec_other = OPERATOR_MAP[other.value][1]
-        if prec_self < prec_other:
-            return -1
-        if prec_self > prec_other:
-            return 1
-        return 0
-
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         """Of equal precedence.
 
         Args:
@@ -89,9 +74,12 @@ class Operator:
         Returns:
             boolean: ``True`` if of equal precedence of ``other``.
         """
-        return OPERATOR_MAP[self.value][1] == OPERATOR_MAP[other.value][1]
+        if isinstance(other, Operator):
+            return OPERATOR_MAP[self.value][1] == OPERATOR_MAP[other.value][1]
 
-    def __lt__(self, other):
+        return NotImplemented
+
+    def __lt__(self, other: 'Operator') -> bool:
         """Of less than precedence.
 
         Args:
@@ -99,6 +87,6 @@ class Operator:
                 against.
 
         Returns:
-            boolean: ``True`` if of less than precendence of ``other``.
+            boolean: ``True`` if of less than precedence of ``other``.
         """
         return OPERATOR_MAP[self.value][1] < OPERATOR_MAP[other.value][1]
